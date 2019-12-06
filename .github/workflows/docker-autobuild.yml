@@ -1,0 +1,31 @@
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+  
+  build-upload:
+    name: Build Image and Upload to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v1
+
+    - name: Build and Upload
+      env:
+        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      run: |
+        # Variables
+        TAG=$(date +%y.%m)
+        NAME=silentdigit/letsencrypt
+
+        # Build image
+        docker build --tag ${NAME}:${TAG} .
+
+        # Push image as current version
+        docker login -u silentdigit -p ${DOCKER_TOKEN}
+        docker push ${NAME}:${TAG}
+
+        # Push image as latest
+        docker tag ${NAME}:${TAG} ${NAME}:latest
+        docker push ${NAME}:latest
