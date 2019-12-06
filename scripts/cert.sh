@@ -3,10 +3,8 @@
 # Initial check for certificates
 certbot certonly --manual --preferred-challenges dns --manual-auth-hook \
   /scripts/auth.sh --manual-cleanup-hook /scripts/cleanup.sh \
-  -m "${LETSENCRYPT_EMAIL}" --no-eff-email -d "${DUCKDNS_DOMAIN}" \
-  --agree-tos --manual-public-ip-logging-ok << EOF
-1
-EOF
+  -m "${LETSENCRYPT_EMAIL}" --no-eff-email -d "${LETSENCRYPT_DOMAIN}" \
+  --agree-tos --manual-public-ip-logging-ok --keep
 
 # Basic check for successful certificate generation
 if [ ! -d "/etc/letsencrypt/live" ]; then

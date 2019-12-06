@@ -6,6 +6,9 @@ Variables:
 * `DUCKDNS_TOKEN`: Duck DNS Account Token
 * `DUCKDNS_DOMAIN`: Full Duck DNS domain (e.g. `test.duckdns.org`)
 * `LETSENCRYPT_EMAIL`: Email used for certificate renewal notifications
+* `LETSENCRYPT_WILDCARD`: `true` or `false`, indicating whether the SSL certificate should be for all subdomains of `DUCKDNS_DOMAIN` (i.e. `*.test.duckdns.org`), or just the main domain (i.e. `test.duckdns.org`)
+
+**Note:** The format of `DUCKDNS_DOMAIN` should be the same regardless of the value of `LETSENCRYPT_WILDCARD`.
 
 Volumes:
 * `<certs>:/etc/letsencrypt`: A named or hosted volume which allows SSL certificates to persist and be accessed by other containers
