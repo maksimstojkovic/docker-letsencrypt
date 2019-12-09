@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# TODO: Make email an optional parameter
+# Check what happens when both -m and registration without email are supplied
+
 # Initial check for certificates
 certbot certonly --manual --preferred-challenges dns --manual-auth-hook \
   /scripts/auth.sh --manual-cleanup-hook /scripts/cleanup.sh \

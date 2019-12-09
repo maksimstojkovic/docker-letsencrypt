@@ -11,14 +11,13 @@ if [ -z "$DUCKDNS_DOMAIN" ]; then
 	exit 1
 fi
 
-if [ -z "$LETSENCRYPT_EMAIL" ]; then
-	echo ERROR: Variable LETSENCRYPT_EMAIL is unset
-	exit 1
-fi
-
 if [ -z "$LETSENCRYPT_WILDCARD" ]; then
 	echo ERROR: Variable LETSENCRYPT_WILDCARD is unset
 	exit 1
+fi
+
+if [ -z "$LETSENCRYPT_EMAIL" ]; then
+	echo NOTICE: You will not receive SSL certificate expiration notices
 fi
 
 # Set certificate url based on LETSENCRYPT_WILDCARD value
