@@ -48,4 +48,7 @@ jobs:
           docker login -u ${USERNAME} -p ${DOCKER_TOKEN}
 
           # Build image as latest version
+          docker buildx build -t ${USERNAME}/${PROJECT}:${TAG} --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x --push .
+
+          # Build image as latest version
           docker buildx build -t ${USERNAME}/${PROJECT}:latest --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x --push .
