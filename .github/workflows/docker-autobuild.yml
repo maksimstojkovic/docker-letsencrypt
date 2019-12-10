@@ -2,10 +2,14 @@ name: Docker Image CI
 
 on: [push]
 
+env:
+  USERNAME: silentdigit
+  PROJECT: letsencrypt
+
 jobs:
   
   buildx:
-    name: Build Muilti-Platform Image and Upload to Docker Hub
+    name: Build Multi-Platform Image and Upload to Docker Hub
     runs-on: ubuntu-latest
     steps:
       -
@@ -39,13 +43,9 @@ jobs:
         run: |
           # Variables
           TAG=$(date +%y.%m)
-          NAME=silentdigit/letsencrypt
 
           #Login
-          docker login -u silentdigit -p ${DOCKER_TOKEN}
-
-          # Build image as TAG version
-          docker buildx build -t ${NAME}:${TAG} --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x --push .
+          docker login -u ${USERNAME} -p ${DOCKER_TOKEN}
 
           # Build image as latest version
-          docker buildx build -t ${NAME}:latest --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x --push .
+          docker buildx build -t ${USERNAME}/${PROJECT}:latest --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x --push .
