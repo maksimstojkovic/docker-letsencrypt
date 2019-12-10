@@ -18,7 +18,9 @@ jobs:
 
       -
         name: Available Platforms
-        run: echo ${{ steps.buildx.outputs.platforms }}
+        env:
+          VERSIONS: ${{ steps.buildx.outputs.platforms }}
+        run: echo ${VERSIONS}
 
       -
         name: Build and Upload
@@ -30,7 +32,7 @@ jobs:
           NAME=silentdigit/letsencrypt
 
           # Build image as TAG version
-          docker buildx build -t ${NAME}:${TAG} --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x --push .
+          # docker buildx build -t ${NAME}:${TAG} --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x --push .
 
           # Build image as latest version
           docker buildx build -t ${NAME}:latest --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x --push .
