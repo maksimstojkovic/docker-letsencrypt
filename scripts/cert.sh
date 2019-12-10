@@ -1,16 +1,26 @@
 #!/bin/sh
 
-# TODO: Make email an optional parameter
-# Check what happens when both -m and registration without email are supplied
+if [ -z "$LETSENCRYPT_EMAIL" ]; then
+  export EMAIL_PARAM="--register-unsafely-without-email"
+else
+  export EMAIL_PARAM="-m ${LETSENCRYPT_EMAIL} --no-eff-email"
+fi
+
+if [ ! -z "$TESTING" ]; then
+  echo NOTICE: Generating staging certificate
+  export TEST_PARAM="--staging"
+fi
 
 # Initial check for certificates
 certbot certonly --manual --preferred-challenges dns --manual-auth-hook \
   /scripts/auth.sh --manual-cleanup-hook /scripts/cleanup.sh \
-  -m "${LETSENCRYPT_EMAIL}" --no-eff-email -d "${LETSENCRYPT_DOMAIN}" \
-  --agree-tos --manual-public-ip-logging-ok --keep
+  "${EMAIL_PARAM}" -d "${LETSENCRYPT_DOMAIN}" \
+  --agree-tos --manual-public-ip-logging-ok --keep ${TEST_PARAM}
 
 # Basic check for successful certificate generation
-if [ ! -d "/etc/letsencrypt/live" ]; then
+if [ ! -d "/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN}" ] || \
+   [ ! -f "/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN}/fullchain.pem" ] || \
+   [ ! -f "/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN}/privkey.pem" ]; then
   echo ERROR: Failed to create SSL certificates
   exit 1
 fi
