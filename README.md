@@ -1,8 +1,15 @@
 # Let's Encrypt for Duck DNS
 
+[![Build Status](https://github.com/silentdigit/docker-letsencrypt/workflows/docker%20build/badge.svg)](https://github.com/silentdigit/docker-letsencrypt)
+[![Docker Pulls](https://img.shields.io/docker/pulls/silentdigit/letsencrypt)](https://hub.docker.com/repository/docker/silentdigit/letsencrypt)
+[![Docker Stars](https://img.shields.io/docker/stars/silentdigit/letsencrypt)](https://hub.docker.com/repository/docker/silentdigit/letsencrypt)
+[![Image Size](https://images.microbadger.com/badges/image/silentdigit/letsencrypt.svg)](https://hub.docker.com/repository/docker/silentdigit/letsencrypt)
+[![Image Version](https://images.microbadger.com/badges/version/silentdigit/letsencrypt.svg)](https://hub.docker.com/repository/docker/silentdigit/letsencrypt)
+[![Image Commit](https://images.microbadger.com/badges/commit/silentdigit/letsencrypt.svg)](https://github.com/silentdigit/docker-letsencrypt)
+
 Automatically generates Let's Encrypt certificates using a lightweight Docker container without requiring any ports to be exposed for DNS challenges.
 
-Variables:
+## Variables
 
 * `DUCKDNS_TOKEN`: Duck DNS account token (obtained from [Duck DNS](https://www.duckdns.org))
 * `DUCKDNS_DOMAIN`: Full Duck DNS domain (e.g. `test.duckdns.org`)
@@ -12,11 +19,8 @@ Variables:
 
 **Note:** The format of `DUCKDNS_DOMAIN` should be the same regardless of the value of `LETSENCRYPT_WILDCARD`.
 
-Volumes:
+## Volumes
 
 * `<certs>:/etc/letsencrypt`: A named or hosted volume which allows SSL certificates to persist and be accessed by other containers
 
 **Note:** If a hosted volume is used, the volume should be mounted in an unused directory in another container to prevent access conflicts.
-
-### TODO:
-- [ ] Implement tests so `depends_on` can be used in docker-compose to prevent other containers from initialising until certificates are ready
