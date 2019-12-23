@@ -1,13 +1,14 @@
-name: Docker Image CI
+name: docker build
 
 on: [push]
 
 env:
   USERNAME: silentdigit
   PROJECT: letsencrypt
+  PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64
+  MB_HOOK: https://hooks.microbadger.com/images/silentdigit/letsencrypt/_6yxWTBCiLrWUo_G3PCewhwxrVo=
 
 jobs:
-  
   buildx:
     name: Build Multi-Platform Image and Upload to Docker Hub
     runs-on: ubuntu-latest
@@ -41,14 +42,19 @@ jobs:
         env:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
         run: |
-          # Variables
+          # Login
+          docker login -u "$USERNAME" -p "$DOCKER_TOKEN"
+
+          # Setup build parameters
+          BUILD_PARAMS="--platform="$PLATFORMS" --build-arg VCS_REF=$(git rev-parse --short HEAD) --push"
+
+          # Build image as tagged version
           TAG=$(date +%y.%m)
-
-          #Login
-          docker login -u ${USERNAME} -p ${DOCKER_TOKEN}
-
-          # Build image as TAG version
-          docker buildx build -t ${USERNAME}/${PROJECT}:${TAG} --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x --push .
+          docker buildx build -t "$USERNAME"/"$PROJECT":"$TAG" $BUILD_PARAMS .
 
           # Build image as latest version
-          docker buildx build -t ${USERNAME}/${PROJECT}:latest --platform=linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x --push .
+          TAG=latest
+          docker buildx build -t "$USERNAME"/"$PROJECT":"$TAG" $BUILD_PARAMS .
+
+          # Update MicroBadger metadata
+          curl -X POST "$MB_HOOK"
