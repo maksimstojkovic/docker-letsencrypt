@@ -1,11 +1,11 @@
 # Let's Encrypt for Duck DNS
 
-[![Build Status](https://github.com/silentdigit/docker-letsencrypt/workflows/docker%20build/badge.svg)](https://github.com/silentdigit/docker-letsencrypt)
-[![Docker Pulls](https://img.shields.io/docker/pulls/silentdigit/letsencrypt)](https://hub.docker.com/repository/docker/silentdigit/letsencrypt)
-[![Docker Stars](https://img.shields.io/docker/stars/silentdigit/letsencrypt)](https://hub.docker.com/repository/docker/silentdigit/letsencrypt)
-[![Image Size](https://images.microbadger.com/badges/image/silentdigit/letsencrypt.svg)](https://hub.docker.com/repository/docker/silentdigit/letsencrypt)
-[![Image Version](https://images.microbadger.com/badges/version/silentdigit/letsencrypt.svg)](https://hub.docker.com/repository/docker/silentdigit/letsencrypt)
-[![Image Commit](https://images.microbadger.com/badges/commit/silentdigit/letsencrypt.svg)](https://github.com/silentdigit/docker-letsencrypt)
+[![Build Status](https://github.com/maksimstojkovic/docker-letsencrypt/workflows/docker%20build/badge.svg)](https://github.com/maksimstojkovic/docker-letsencrypt)
+[![Docker Pulls](https://img.shields.io/docker/pulls/maksimstojkovic/letsencrypt)](https://hub.docker.com/repository/docker/maksimstojkovic/letsencrypt)
+[![Docker Stars](https://img.shields.io/docker/stars/maksimstojkovic/letsencrypt)](https://hub.docker.com/repository/docker/maksimstojkovic/letsencrypt)
+[![Image Size](https://images.microbadger.com/badges/image/maksimstojkovic/letsencrypt.svg)](https://hub.docker.com/repository/docker/maksimstojkovic/letsencrypt)
+[![Image Version](https://images.microbadger.com/badges/version/maksimstojkovic/letsencrypt.svg)](https://hub.docker.com/repository/docker/maksimstojkovic/letsencrypt)
+[![Image Commit](https://images.microbadger.com/badges/commit/maksimstojkovic/letsencrypt.svg)](https://github.com/maksimstojkovic/docker-letsencrypt)
 
 Automatically generates Let's Encrypt certificates using a lightweight Docker container without requiring any ports to be exposed for DNS challenges.
 
