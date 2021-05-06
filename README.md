@@ -1,11 +1,10 @@
 # Let's Encrypt for Duck DNS
 
-[![Build Status](https://github.com/maksimstojkovic/docker-letsencrypt/workflows/docker%20build/badge.svg)](https://github.com/maksimstojkovic/docker-letsencrypt)
-[![Docker Pulls](https://img.shields.io/docker/pulls/maksimstojkovic/letsencrypt)](https://hub.docker.com/repository/docker/maksimstojkovic/letsencrypt)
-[![Docker Stars](https://img.shields.io/docker/stars/maksimstojkovic/letsencrypt)](https://hub.docker.com/repository/docker/maksimstojkovic/letsencrypt)
-[![Image Size](https://images.microbadger.com/badges/image/maksimstojkovic/letsencrypt.svg)](https://hub.docker.com/repository/docker/maksimstojkovic/letsencrypt)
-[![Image Version](https://images.microbadger.com/badges/version/maksimstojkovic/letsencrypt.svg)](https://hub.docker.com/repository/docker/maksimstojkovic/letsencrypt)
-[![Image Commit](https://images.microbadger.com/badges/commit/maksimstojkovic/letsencrypt.svg)](https://github.com/maksimstojkovic/docker-letsencrypt)
+[![Build Status](https://github.com/maksimstojkovic/docker-letsencrypt/actions/workflows/docker-build.yml/badge.svg)](https://github.com/maksimstojkovic/docker-letsencrypt)
+[![Docker Pulls](https://img.shields.io/docker/pulls/maksimstojkovic/letsencrypt)](https://hub.docker.com/r/maksimstojkovic/letsencrypt)
+[![Docker Stars](https://img.shields.io/docker/stars/maksimstojkovic/letsencrypt)](https://hub.docker.com/r/maksimstojkovic/letsencrypt)
+[![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/maksimstojkovic/letsencrypt)](https://hub.docker.com/r/maksimstojkovic/letsencrypt)
+[![Docker Image Version (latest by date)](https://img.shields.io/docker/v/maksimstojkovic/letsencrypt)](https://hub.docker.com/r/maksimstojkovic/letsencrypt)
 
 Automatically generates Let's Encrypt certificates using a lightweight Docker container without requiring any ports to be exposed for DNS challenges.
 
