@@ -1,24 +1,26 @@
 name: docker build
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 env:
   USERNAME: maksimstojkovic
   PROJECT: letsencrypt
-  PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64
-  MB_HOOK: https://hooks.microbadger.com/images/silentdigit/letsencrypt/_6yxWTBCiLrWUo_G3PCewhwxrVo=
+  PLATFORMS: linux/arm/v7,linux/arm64,linux/amd64
 
 jobs:
   buildx:
     name: Build Multi-Platform Image and Upload to Docker Hub
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout Repo
-        uses: actions/checkout@v1
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          ref: 'main'
 
-      -
-        name: Setup Docker Buildx
+      - name: Setup Docker Buildx
         run: |
           # Build docker buildx from source
           export DOCKER_BUILDKIT=1
@@ -37,8 +39,7 @@ jobs:
           docker buildx create --name builder --driver docker-container --use
           docker buildx inspect --bootstrap
 
-      -
-        name: Build and Push
+      - name: Build and Push
         env:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
         run: |
@@ -46,7 +47,7 @@ jobs:
           docker login -u "$USERNAME" -p "$DOCKER_TOKEN"
 
           # Setup build parameters
-          BUILD_PARAMS="--platform="$PLATFORMS" --build-arg VCS_REF=$(git rev-parse --short HEAD) --push"
+          BUILD_PARAMS="--platform="$PLATFORMS" --push"
 
           # Build image as tagged version
           TAG=$(date +%y.%m)
@@ -55,6 +56,3 @@ jobs:
           # Build image as latest version
           TAG=latest
           docker buildx build -t "$USERNAME"/"$PROJECT":"$TAG" $BUILD_PARAMS .
-
-          # Update MicroBadger metadata
-          curl -X POST "$MB_HOOK"
