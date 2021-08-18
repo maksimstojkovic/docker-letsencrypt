@@ -3,7 +3,7 @@ name: docker build
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
   USERNAME: maksimstojkovic
@@ -18,7 +18,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
-          ref: 'main'
+          ref: 'master'
 
       - name: Setup Docker Buildx
         run: |
