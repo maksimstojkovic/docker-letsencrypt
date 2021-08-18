@@ -19,9 +19,9 @@ fi
 # Set certificate url based on LETSENCRYPT_WILDCARD value
 if [ "$LETSENCRYPT_WILDCARD" = "true" ]; then
   echo "INFO: A wildcard SSL certificate will be created"
-  LETSENCRYPT_DOMAIN=*.$DUCKDNS_DOMAIN
+  LETSENCRYPT_DOMAIN="*.$DUCKDNS_DOMAIN"
 else
-  LETSENCRYPT_DOMAIN=$DUCKDNS_DOMAIN
+  LETSENCRYPT_DOMAIN="$DUCKDNS_DOMAIN"
   LETSENCRYPT_WILDCARD="false"
 fi
 
@@ -53,13 +53,20 @@ fi
 
 if [ "$TESTING" = "true" ]; then
   echo "INFO: Generating staging certificate"
-  TEST_PARAM="--staging"
+  TEST_PARAM="--test-cert"
+else
+  unset TEST_PARAM
 fi
+
+echo "certbot certonly --manual --preferred-challenges dns --manual-auth-hook \
+  /scripts/auth.sh --manual-cleanup-hook /scripts/cleanup.sh \
+  $EMAIL_PARAM -d $LETSENCRYPT_DOMAIN \
+  --agree-tos --manual-public-ip-logging-ok --keep $TEST_PARAM"
 
 # Create certificates
 certbot certonly --manual --preferred-challenges dns --manual-auth-hook \
   /scripts/auth.sh --manual-cleanup-hook /scripts/cleanup.sh \
-  $EMAIL_PARAM -d "$LETSENCRYPT_DOMAIN" \
+  $EMAIL_PARAM -d $LETSENCRYPT_DOMAIN \
   --agree-tos --manual-public-ip-logging-ok --keep $TEST_PARAM
 
 chown -R $UID:$GID /etc/letsencrypt
