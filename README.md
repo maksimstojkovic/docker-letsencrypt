@@ -8,18 +8,20 @@
 
 Automatically generates Let's Encrypt certificates using a lightweight Docker container without requiring any ports to be exposed for DNS challenges.
 
-## Variables
+## Environment Variables
 
-* `DUCKDNS_TOKEN`: Duck DNS account token (obtained from [Duck DNS](https://www.duckdns.org))
-* `DUCKDNS_DOMAIN`: Full Duck DNS domain (e.g. `test.duckdns.org`)
+* `DUCKDNS_TOKEN`: Duck DNS account token (obtained from [Duck DNS](https://www.duckdns.org)) (*required*)
+* `DUCKDNS_DOMAIN`: Full Duck DNS domain (e.g. `test.duckdns.org`) (*required*)
 * `LETSENCRYPT_EMAIL`: Email used for certificate renewal notifications (optional)
-* `LETSENCRYPT_WILDCARD`: `true` or `false`, indicating whether the SSL certificate should be for subdomains *only* of `DUCKDNS_DOMAIN` (i.e. `*.test.duckdns.org`), or for the main domain *only* (i.e. `test.duckdns.org`) (default: `false`)
-* `TESTING`: `true` or `false`, indicating whether a staging SSL certificate should be generated or not (default: `false`)
+* `LETSENCRYPT_WILDCARD`: `true` or `false`, indicating whether the SSL certificate should be for subdomains *only* of `DUCKDNS_DOMAIN` (i.e. `*.test.duckdns.org`), or for the main domain *only* (i.e. `test.duckdns.org`) (optional, default: `false`)
+* `TESTING`: `true` or `false`, indicating whether a staging SSL certificate should be generated or not (optional, default: `false`)
+* `UID`: User ID to apply to Let's Encrypt files generated (optional, recommended, default: `0` - root)
+* `GID`: Group ID to apply to Let's Encrypt files generated (optional, recommended, default: `0` - root)
 
 **Note:** The format of `DUCKDNS_DOMAIN` should be the same regardless of the value of `LETSENCRYPT_WILDCARD`.
 
 ## Volumes
 
-* `<certs>:/etc/letsencrypt`: A named or hosted volume which allows SSL certificates to persist and be accessed by other containers
+* `<certs>:/etc/letsencrypt`: A named or host volume which allows SSL certificates to persist and be accessed by other containers
 
-**Note:** If a hosted volume is used, the volume should be mounted in an unused directory in another container to prevent access conflicts.
+**Note:** To use the `<certs>` host volume in another container, mount it as read-only for those containers. The `<certs>` host volume should be read-write enabled for the Letsencrypt container.
