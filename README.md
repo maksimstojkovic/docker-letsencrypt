@@ -13,12 +13,21 @@ Automatically generates Let's Encrypt certificates using a lightweight Docker co
 * `DUCKDNS_TOKEN`: Duck DNS account token (obtained from [Duck DNS](https://www.duckdns.org)) (*required*)
 * `DUCKDNS_DOMAIN`: Full Duck DNS domain (e.g. `test.duckdns.org`) (*required*)
 * `LETSENCRYPT_EMAIL`: Email used for certificate renewal notifications (optional)
+* `LETSENCRYPT_DOMAIN`: Domain to generate SSL cert for. By default SSL certificate is generated for `DUCKDNS_DOMAIN` (optional)
 * `LETSENCRYPT_WILDCARD`: `true` or `false`, indicating whether the SSL certificate should be for subdomains *only* of `DUCKDNS_DOMAIN` (i.e. `*.test.duckdns.org`), or for the main domain *only* (i.e. `test.duckdns.org`) (optional, default: `false`)
 * `TESTING`: `true` or `false`, indicating whether a staging SSL certificate should be generated or not (optional, default: `false`)
 * `UID`: User ID to apply to Let's Encrypt files generated (optional, recommended, default: `0` - root)
 * `GID`: Group ID to apply to Let's Encrypt files generated (optional, recommended, default: `0` - root)
 
-**Note:** The format of `DUCKDNS_DOMAIN` should be the same regardless of the value of `LETSENCRYPT_WILDCARD`.
+## Notes
+
+* The format of `DUCKDNS_DOMAIN` should be the same regardless of the value of `LETSENCRYPT_WILDCARD`.
+
+* In order to use `LETSENCRYPT_DOMAIN` feature, the following DNS records need to be created for ACME authentication
+```
+   <LETSENCRYPT_DOMAIN> CNAME -> <DUCKDNS_DOMAIN>
+   _acme-challenge.<<LETSENCRYPT_DOMAIN> CNAME -> _acme-challenge.<DUCKDNS_DOMAIN>
+```
 
 ## Volumes
 
