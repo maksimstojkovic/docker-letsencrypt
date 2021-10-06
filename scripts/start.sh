@@ -1,24 +1,24 @@
 #!/bin/sh
 
 # Check variables DUCKDNS_TOKEN, DUCKDNS_DOMAIN
-if [ -z "$DUCKDNS_TOKEN" ]; then
-  echo "ERROR: Variable DUCKDNS_TOKEN is unset"
+if [ -z "$DUCKDNS_TOKEN" ] || [ "$DUCKDNS_TOKEN" = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" ]; then
+  echo "ERROR: Variable DUCKDNS_TOKEN is unset or still its default value"
   exit 1
 fi
 
 if [ -z "$DUCKDNS_DOMAIN" ]; then
-  echo "ERROR: Variable DUCKDNS_DOMAIN is unset"
+  echo "ERROR: Variable DUCKDNS_DOMAIN is unset or still its default value"
   exit 1
 fi
 
 # Print email notice if applicable
 if [ -z "$LETSENCRYPT_EMAIL" ]; then
-  echo "INFO: You will not receive SSL certificate expiration notices"
+  echo "WARNING: You will not receive SSL certificate expiration notices"
 fi
 
 # Set LETSENCRYPT_DOMAIN to DUCKDNS_DOMAIN if not specified
 if [ -z "$LETSENCRYPT_DOMAIN" ]; then
-  echo "INFO: No LETSENCRYPT_DOMAIN, using DUCKDNS_DOMAIN"
+  echo "INFO: LETSENCRYPT_DOMAIN is unset, using DUCKDNS_DOMAIN"
   LETSENCRYPT_DOMAIN=$DUCKDNS_DOMAIN
 fi
 

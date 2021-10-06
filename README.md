@@ -12,22 +12,24 @@ Automatically generates Let's Encrypt certificates using a lightweight Docker co
 
 * `DUCKDNS_TOKEN`: Duck DNS account token (obtained from [Duck DNS](https://www.duckdns.org)) (*required*)
 * `DUCKDNS_DOMAIN`: Full Duck DNS domain (e.g. `test.duckdns.org`) (*required*)
+* `LETSENCRYPT_DOMAIN`: Domain to generate SSL cert for. By default the SSL certificate is generated for `DUCKDNS_DOMAIN` (optional)
+* `LETSENCRYPT_WILDCARD`: `true` or `false`, indicating whether the SSL certificate should be for subdomains *only* of `LETSENCRYPT_DOMAIN` (i.e. `*.test.duckdns.org`), or for the main domain *only* (i.e. `test.duckdns.org`) (optional, default: `false`)
 * `LETSENCRYPT_EMAIL`: Email used for certificate renewal notifications (optional)
-* `LETSENCRYPT_DOMAIN`: Domain to generate SSL cert for. By default SSL certificate is generated for `DUCKDNS_DOMAIN` (optional)
-* `LETSENCRYPT_WILDCARD`: `true` or `false`, indicating whether the SSL certificate should be for subdomains *only* of `DUCKDNS_DOMAIN` (i.e. `*.test.duckdns.org`), or for the main domain *only* (i.e. `test.duckdns.org`) (optional, default: `false`)
 * `TESTING`: `true` or `false`, indicating whether a staging SSL certificate should be generated or not (optional, default: `false`)
 * `UID`: User ID to apply to Let's Encrypt files generated (optional, recommended, default: `0` - root)
 * `GID`: Group ID to apply to Let's Encrypt files generated (optional, recommended, default: `0` - root)
 
 ## Notes
 
-* The format of `DUCKDNS_DOMAIN` should be the same regardless of the value of `LETSENCRYPT_WILDCARD`.
+* The `DUCKDNS_DOMAIN` should already be pointing to the server with a dynamic IP. The [maksimstojkovic/duckdns](https://github.com/maksimstojkovic/docker-duckdns) image can be used to automatically update the IP address.
+* The format of `DUCKDNS_DOMAIN` should be `<subdomain>.duckdns.org`, regardless of the value of `LETSENCRYPT_WILDCARD`.
+* To use `LETSENCRYPT_DOMAIN` feature, the following DNS records need to be created for ACME authentication (records should not be proxied):
 
-* In order to use `LETSENCRYPT_DOMAIN` feature, the following DNS records need to be created for ACME authentication
-```
-   <LETSENCRYPT_DOMAIN> CNAME -> <DUCKDNS_DOMAIN>
-   _acme-challenge.<<LETSENCRYPT_DOMAIN> CNAME -> _acme-challenge.<DUCKDNS_DOMAIN>
-```
+| Type  | Name                                   | Value                              | Condition                         |
+|-------|----------------------------------------|------------------------------------|-----------------------------------|
+| CNAME | `*.<LETSENCRYPT_DOMAIN>`               | `<DUCKDNS_DOMAIN>`                 | `LETSENCRYPT_WILDCARD` == `true`  |
+| CNAME | `<LETSENCRYPT_DOMAIN>`                 | `<DUCKDNS_DOMAIN>`                 | `LETSENCRYPT_WILDCARD` == `false` |
+| CNAME | `_acme-challenge.<LETSENCRYPT_DOMAIN>` | `_acme-challenge.<DUCKDNS_DOMAIN>` |                                   |
 
 ## Volumes
 
