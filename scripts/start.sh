@@ -1,44 +1,50 @@
 #!/bin/sh
 
 # Check variables DUCKDNS_TOKEN, DUCKDNS_DOMAIN
-if [ -z "$DUCKDNS_TOKEN" ]; then
-	echo "ERROR: Variable DUCKDNS_TOKEN is unset"
-	exit 1
+if [ -z "$DUCKDNS_TOKEN" ] || [ "$DUCKDNS_TOKEN" = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" ]; then
+  echo "ERROR: Variable DUCKDNS_TOKEN is unset or still its default value"
+  exit 1
 fi
 
 if [ -z "$DUCKDNS_DOMAIN" ]; then
-	echo "ERROR: Variable DUCKDNS_DOMAIN is unset"
-	exit 1
+  echo "ERROR: Variable DUCKDNS_DOMAIN is unset or still its default value"
+  exit 1
 fi
 
 # Print email notice if applicable
 if [ -z "$LETSENCRYPT_EMAIL" ]; then
-	echo "INFO: You will not receive SSL certificate expiration notices"
+  echo "WARNING: You will not receive SSL certificate expiration notices"
+fi
+
+# Set LETSENCRYPT_DOMAIN to DUCKDNS_DOMAIN if not specified
+if [ -z "$LETSENCRYPT_DOMAIN" ]; then
+  echo "INFO: LETSENCRYPT_DOMAIN is unset, using DUCKDNS_DOMAIN"
+  LETSENCRYPT_DOMAIN=$DUCKDNS_DOMAIN
 fi
 
 # Set certificate url based on LETSENCRYPT_WILDCARD value
 if [ "$LETSENCRYPT_WILDCARD" = "true" ]; then
   echo "INFO: A wildcard SSL certificate will be created"
-  LETSENCRYPT_DOMAIN="*.$DUCKDNS_DOMAIN"
+  LETSENCRYPT_DOMAIN="*.$LETSENCRYPT_DOMAIN"
 else
-  LETSENCRYPT_DOMAIN="$DUCKDNS_DOMAIN"
   LETSENCRYPT_WILDCARD="false"
 fi
 
 # Set user and group ID's for files
 if [ -z "$UID" ]; then
-	echo "INFO: No UID specified, using root UID of 0"
+  echo "INFO: No UID specified, using root UID of 0"
   UID=0
 fi
 
 if [ -z "$GID" ]; then
-	echo "INFO: No GID specified, using root GID of 0"
+  echo "INFO: No GID specified, using root GID of 0"
   GID=0
 fi
 
 # Print variables
 echo "DUCKDNS_TOKEN: $DUCKDNS_TOKEN"
 echo "DUCKDNS_DOMAIN: $DUCKDNS_DOMAIN"
+echo "LETSENCRYPT_DOMAIN: $LETSENCRYPT_DOMAIN"
 echo "LETSENCRYPT_EMAIL: $LETSENCRYPT_EMAIL"
 echo "LETSENCRYPT_WILDCARD: $LETSENCRYPT_WILDCARD"
 echo "TESTING: $TESTING"
@@ -58,23 +64,25 @@ else
   unset TEST_PARAM
 fi
 
-echo "certbot certonly --manual --preferred-challenges dns --manual-auth-hook \
-  /scripts/auth.sh --manual-cleanup-hook /scripts/cleanup.sh \
+echo "certbot certonly --manual --preferred-challenges dns \
+  --manual-auth-hook /scripts/auth.sh \
+  --manual-cleanup-hook /scripts/cleanup.sh \
   $EMAIL_PARAM -d $LETSENCRYPT_DOMAIN \
   --agree-tos --manual-public-ip-logging-ok --keep $TEST_PARAM"
 
 # Create certificates
-certbot certonly --manual --preferred-challenges dns --manual-auth-hook \
-  /scripts/auth.sh --manual-cleanup-hook /scripts/cleanup.sh \
+certbot certonly --manual --preferred-challenges dns \
+  --manual-auth-hook /scripts/auth.sh \
+  --manual-cleanup-hook /scripts/cleanup.sh \
   $EMAIL_PARAM -d $LETSENCRYPT_DOMAIN \
   --agree-tos --manual-public-ip-logging-ok --keep $TEST_PARAM
 
 chown -R $UID:$GID /etc/letsencrypt
 
 # Check for successful certificate generation
-if [ ! -d "/etc/letsencrypt/live/${DUCKDNS_DOMAIN}" ] || \
-   [ ! -f "/etc/letsencrypt/live/${DUCKDNS_DOMAIN}/fullchain.pem" ] || \
-   [ ! -f "/etc/letsencrypt/live/${DUCKDNS_DOMAIN}/privkey.pem" ]; then
+if [ ! -d "/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN#\*\.}" ] || \
+   [ ! -f "/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN#\*\.}/fullchain.pem" ] || \
+   [ ! -f "/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN#\*\.}/privkey.pem" ]; then
   echo "ERROR: Failed to create SSL certificates"
   exit 1
 fi
