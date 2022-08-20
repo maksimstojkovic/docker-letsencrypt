@@ -1,10 +1,2 @@
-.git
-.github
-certs
-
-.dockerignore
-.gitignore
-Dockerfile
-letsencrypt.env
-LICENSE
-README.md
+*
+!scripts/
