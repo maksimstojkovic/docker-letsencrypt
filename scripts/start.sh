@@ -32,7 +32,7 @@ fi
 
 # Set default preferred chain if no value specified
 if [ -z "$LETSENCRYPT_CHAIN" ]; then
-  "INFO: LETSENCRYPT_CHAIN is unset, using default chain"
+  echo "INFO: LETSENCRYPT_CHAIN is unset, using default chain"
   LETSENCRYPT_CHAIN="default"
 fi
 
