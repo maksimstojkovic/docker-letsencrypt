@@ -30,6 +30,13 @@ else
   LETSENCRYPT_WILDCARD="false"
 fi
 
+if [ "$LETSENCRYPT_WILDCARD_DOMAIN_SAN" = "true" ] && [ "$LETSENCRYPT_WILDCARD" = "true" ]; then
+  echo "INFO: Main domain SAN requested and will be created at the same time"
+  LETSENCRYPT_WILDCARD_DOMAIN_SAN="true"
+else 
+  LETSENCRYPT_WILDCARD_DOMAIN_SAN="true"
+fi
+
 # Set default preferred chain if no value specified
 if [ -z "$LETSENCRYPT_CHAIN" ]; then
   echo "INFO: LETSENCRYPT_CHAIN is unset, using default chain"
@@ -57,6 +64,7 @@ echo "LETSENCRYPT_CHAIN: $LETSENCRYPT_CHAIN"
 echo "TESTING: $TESTING"
 echo "UID: $UID"
 echo "GID: $GID"
+echo "LETSENCRYPT_WILDCARD_DOMAIN_SAN: $LETSENCRYPT_WILDCARD_DOMAIN_SAN"
 
 if [ -z "$LETSENCRYPT_EMAIL" ]; then
   EMAIL_PARAM="--register-unsafely-without-email"
@@ -77,17 +85,23 @@ else
   unset TEST_PARAM
 fi
 
+if [ "$LETSENCRYPT_WILDCARD_DOMAIN_SAN" = "true" ]; then
+  DOMAIN_STRING="-d $LETSENCRYPT_DOMAIN -d $DUCKDNS_DOMAIN"
+else
+  DOMAIN_STRING="-d $LETSENCRYPT_DOMAIN"
+fi
+
 echo "certbot certonly --manual --preferred-challenges dns \
   --manual-auth-hook /scripts/auth.sh \
   --manual-cleanup-hook /scripts/cleanup.sh \
-  ${CHAIN_PARAM[@]} $EMAIL_PARAM -d $LETSENCRYPT_DOMAIN \
+  ${CHAIN_PARAM[@]} $EMAIL_PARAM $DOMAIN_STRING \
   --agree-tos --manual-public-ip-logging-ok --keep $TEST_PARAM"
 
 # Create certificates
 certbot certonly --manual --preferred-challenges dns \
   --manual-auth-hook /scripts/auth.sh \
   --manual-cleanup-hook /scripts/cleanup.sh \
-  "${CHAIN_PARAM[@]}" $EMAIL_PARAM -d $LETSENCRYPT_DOMAIN \
+  "${CHAIN_PARAM[@]}" $EMAIL_PARAM $DOMAIN_STRING \
   --agree-tos --manual-public-ip-logging-ok --keep $TEST_PARAM
 
 chown -R $UID:$GID /etc/letsencrypt
