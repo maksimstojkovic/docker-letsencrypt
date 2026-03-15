@@ -93,9 +93,10 @@ certbot certonly --manual --preferred-challenges dns \
 chown -R $UID:$GID /etc/letsencrypt
 
 # Check for successful certificate generation
-if [ ! -d "/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN#\*\.}" ] || \
-   [ ! -f "/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN#\*\.}/fullchain.pem" ] || \
-   [ ! -f "/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN#\*\.}/privkey.pem" ]; then
+DEST_DIR=$(echo "/etc/letsencrypt/live/${LETSENCRYPT_DOMAIN#\*\.}" | cut -d ',' -f1)
+if [ ! -d "$DEST_DIR" ] || \
+   [ ! -f "$DEST_DIR/fullchain.pem" ] || \
+   [ ! -f "$DEST_DIR/privkey.pem" ]; then
   echo "ERROR: Failed to create SSL certificates"
   exit 1
 fi
